@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+#include <unistd.h>
 
 #include "m3u8_downloader.h"
 
@@ -51,7 +52,11 @@ int main(int argc, char const *argv[])
         }
 
         if (completed == number) {
-            m3u8_merge(outfile, list_segs, number);
+            if (m3u8_merge(outfile, list_segs, number)) {
+                for (i = 0; i < number; ++i) {
+                    unlink(list_segs[i].filename);
+                }
+            }
         }
 
         fclose(outfile);
